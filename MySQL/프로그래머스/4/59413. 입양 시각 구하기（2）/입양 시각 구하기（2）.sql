@@ -1,0 +1,16 @@
+-- 코드를 입력하세요
+WITH RECURSIVE hours AS (
+    SELECT 0 AS HOUR
+    UNION ALL
+    SELECT HOUR + 1 FROM hours WHERE HOUR < 23
+),
+adoption_by_hour AS (
+    SELECT HOUR(DATETIME) AS HOUR, COUNT(*) AS COUNT
+    FROM ANIMAL_OUTS
+    GROUP BY HOUR(DATETIME)
+)
+SELECT h.HOUR, COALESCE(a.COUNT, 0) AS COUNT
+FROM hours h
+LEFT JOIN adoption_by_hour a 
+    ON h.HOUR = a.HOUR
+ORDER BY h.HOUR;
